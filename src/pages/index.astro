@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 const name = 'Arya Mazandarani';
 let nameIndex = 0;
 const nameWords = name.split(' ').map(word => Array.from(word).map(letter => ({ letter, delay: nameIndex++ * 30 })));
-const paragraphs = ["I am a recent Computer Science graduate from NJIT -- working on creating ambitious, scalable, and practical projects for real people to use and benefit from.", "Currently seeking a full-time position that would apply my ambition and expertise into building reliable systems to help people solve meaningful problems", "When I'm not building tech projects, you can find me working out, going on adventurous walks, or playing guitar.", "Learn more about me and my journey by navigating to the other pages above!"];
+const paragraphs = ["I am a recent Computer Science graduate from NJIT -- creating ambitious, scalable, and practical projects for real people to use and benefit from.", "Currently seeking a full-time position that would apply my ambition and expertise into building reliable and effective systems to help people solve meaningful problems", "When I'm not building tech projects, you can find me working out, going on adventurous walks, or playing guitar.", "Learn more about me and my journey by using the tabs above to navigate to other pages and explore!"];
 const highlightedPhrase = 'seeking a full-time position';
 const entries = paragraphs.map(text => {
   let characterIndex = 0;

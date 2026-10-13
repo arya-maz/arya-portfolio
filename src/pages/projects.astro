@@ -1,14 +1,63 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PageHeading from '../components/PageHeading.astro';
-import DesignMedia from '../components/DesignMedia.astro';
+
+// Add, remove, or reorder these entries to update your Projects page.
+// Put screenshots in public/images/projects, then use /images/projects/file.png.
+// Leave github blank to hide the link. mobileImage is optional.
+const projects = [
+  {
+    title: 'Liner Notes — Album Discovery',
+    description: [
+      'I built a Spotify-connected app that recommends five albums from distinct artists based on listening habits. As a vinyl collector, I\'ve always found the liner notes of records to be extremely fascinating -- a glimpse into the creative process, background, and inspiration of the album as a whole. This inspired the name of my project, as a nod to the discovery and curiosity that came along with being an admirer and collector of music.',
+      'Using React, Python, and FastAPI, I developed and carefully refined a recommendation pipeline that balances familiarity with discovery, filtered out irrelevant results (extremely familiar albums, duplicate editions), and lets listeners open recommendations directly in Spotify.'
+      ],
+    image: '/design/20-30.svg',
+    mobileImage: '/design/23-270.svg',
+    alt: 'Project image placeholder',
+    github: 'https://github.com/arya-maz/music-recommendation-app',
+  },
+  {
+    title: 'Personal Portfolio Website',
+    description: [
+      'I take pride in my work, and built a platform to both display my accomplishments and provide a glimpse into my life beyond the surface level.',
+      'I designed and built this website with Astro, TypeScript, and Tailwind CSS, translating my Figma layouts into responsive components. The folder-and-notebook interface includes animated handwriting, a highlighted introduction, mobile navigation, and a contact form prepared for Formspree. Updates are regularly made to reflect progress in both career and personal achievements, as well as QOL enhancements made for both users as well as personal development of the site.'
+      ],
+    image: '/design/20-40.svg',
+    mobileImage: '/design/23-279.svg',
+    alt: 'Project image placeholder',
+    github: 'https://github.com/arya-maz/arya-portfolio',
+  },
+];
 ---
 <Layout title="Projects" page="Projects">
   <PageHeading title="Projects" subtitle="A selection of things I’ve built." />
   <div class="project-list">
-    {[0, 1].map(i => <article class:list={['media-row', { 'image-left': i === 1 }]}>
-      <div class="row-copy"><h2>Project title</h2><p>A short description of the project, the problem it solves, and what I built.</p></div>
-      <DesignMedia desktop={i === 0 ? '20-30' : '20-40'} mobile={i === 0 ? '23-270' : '23-279'} alt="Project image placeholder" />
-    </article>)}
+    {projects.map((project, index) => (
+      <article class:list={['media-row', { 'image-left': index % 2 === 1 }]}>
+        <picture class="design-media">
+          {project.mobileImage && <source media="(max-width: 599px)" srcset={project.mobileImage} />}
+          <img src={project.image} alt={project.alt} width="720" height="360" loading="lazy" />
+        </picture>
+        <div class="row-copy">
+          <h2>{project.title}</h2>
+          {project.description.map(paragraph => <p>{paragraph}</p>)}
+          {project.github && <a class="project-link" href={project.github} target="_blank" rel="noopener noreferrer">View on GitHub ↗</a>}
+        </div>
+      </article>
+    ))}
   </div>
 </Layout>
+<style>
+  .project-link { display:inline-block; margin-top:16px; text-decoration:underline; }
+  .design-media { display:block; width:100%; aspect-ratio:4 / 3; border-radius:20px; overflow:hidden; }
+  .design-media img { width:100%; height:100%; object-fit:cover; }
+  @media (min-width:600px) {
+    .media-row,.media-row.image-left { display:flow-root; min-height:0; }
+    .row-copy { display:contents; }
+    .row-copy h2 { top:0; }
+    .design-media { float:right; width:min(40%,480px); margin:0 0 24px clamp(24px, calc(3.81vw + 1.14px), 56px); }
+    .image-left .design-media { float:left; margin:0 clamp(24px, calc(3.81vw + 1.14px), 56px) 24px 0; }
+  }
+  @media (max-width:599px) { .design-media { border-radius:10px; } }
+</style>

@@ -155,3 +155,9 @@ hr { border:0; height:1px; background:rgb(133 139 144 / .6); margin:0; }
 @media (hover:hover) { .social-profile:hover { transform:scale(1.06); } }
 .social-profile:focus-visible { transform:scale(1.06); }
 @media (prefers-reduced-motion:reduce) { .social-profile { transition:none; } }
+
+@media (max-width:599px) {
+  .experience-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .experience-heading h2 { min-width:0; flex:1; }
+  .experience-heading .company-mobile { order:0; flex-shrink:0; }
+}
