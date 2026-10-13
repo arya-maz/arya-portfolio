@@ -1,0 +1,39 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ContactForm from '../components/ContactForm.astro';
+import PageHeading from '../components/PageHeading.astro';
+import { socials } from '../data/social';
+---
+<Layout title="Connect" page="Connect">
+  <PageHeading title="Connect" subtitle="Find me across different social media networks" />
+  <div class="socials">
+    {socials.map(social => {
+      const isContact = social.name === 'Email';
+      const Tag = isContact ? 'button' : social.href ? 'a' : 'section';
+      return <Tag class="social-profile" type={isContact ? 'button' : undefined} data-contact-toggle={isContact ? true : undefined} aria-expanded={isContact ? 'false' : undefined} aria-controls={isContact ? 'contact-panel' : undefined} href={social.href || undefined} target={social.href ? '_blank' : undefined} rel={social.href ? 'noopener noreferrer' : undefined} aria-label={isContact ? 'Show contact form' : social.href ? `Open Arya’s ${social.name} in a new tab` : undefined}>
+        <img class="social-desktop-icon" src={`/design/${social.desktop}.svg`} width="64" height="64" alt="" />
+        <img class="social-mobile-icon" src={`/design/${social.mobile}.svg`} width="56" height="56" alt="" />
+        <div class="social-copy"><h2>{social.name}</h2></div>
+      </Tag>;
+    })}
+  </div>
+  <div id="contact-panel" hidden><ContactForm /></div>
+</Layout>
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-contact-toggle]');
+  const panel = document.querySelector<HTMLElement>('#contact-panel');
+  toggle?.addEventListener('click', () => {
+    if (!panel) return;
+    const opening = panel.hidden;
+    panel.hidden = !opening;
+    toggle.setAttribute('aria-expanded', String(opening));
+    toggle.setAttribute('aria-label', opening ? 'Hide contact form' : 'Show contact form');
+    if (opening) {
+      panel.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'nearest' });
+      panel.querySelector<HTMLInputElement>('input[name="name"]')?.focus({ preventScroll: true });
+    }
+  });
+</script>
+<style>
+  button.social-profile { background:transparent; border:0; padding:0; color:inherit; font:inherit; }
+</style>

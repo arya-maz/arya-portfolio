@@ -1,0 +1,8 @@
+---
+interface Props { desktop: string; mobile: string; alt: string }
+const { desktop, mobile, alt } = Astro.props;
+---
+<picture class="design-media">
+  <source media="(max-width: 599px)" srcset={`/design/${mobile}.svg`} />
+  <img src={`/design/${desktop}.svg`} alt={alt} width="720" height="360" />
+</picture>

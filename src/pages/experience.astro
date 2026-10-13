@@ -1,0 +1,17 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeading from '../components/PageHeading.astro';
+---
+<Layout title="Experience" page="Experience">
+  <PageHeading title="Experience" subtitle="Where I’ve worked and what I’ve contributed." />
+  <div class="experience-list">
+    {[0, 1].map(i => <article class="experience-row">
+      <div class="row-copy"><h2>Company name · Job title</h2><div class="experience-copy">
+        <p>Month YYYY – Month YYYY&nbsp; · &nbsp;Location</p>
+        <ul><li>Describe a key responsibility and the work you owned.</li><li>Highlight a contribution, including the tools or skills you used.</li><li>Share an outcome or measurable impact from your work.</li></ul>
+      </div></div>
+      <img class="company-desktop" src={`/design/${i === 0 ? '20-89' : '20-94'}.svg`} width="160" height="160" alt="Company logo placeholder" />
+      <div class="company-mobile"><img src={`/design/${i === 0 ? '23-298' : '23-304'}.svg`} width="80" height="80" alt="" /><img class="building-symbol" src={`/design/${i === 0 ? '23-300' : '23-306'}.svg`} width="38" height="34" alt="Company logo placeholder" /></div>
+    </article>)}
+  </div>
+</Layout>

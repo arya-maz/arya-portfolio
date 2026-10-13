@@ -1,0 +1,58 @@
+---
+const candidate = import.meta.env.PUBLIC_FORMSPREE_ENDPOINT?.trim() || '';
+const endpoint = /^https:\/\/formspree\.io\/f\/[a-zA-Z0-9]+$/.test(candidate) ? candidate : '';
+---
+<section class="contact-box" aria-labelledby="contact-heading">
+  <h2 id="contact-heading">Contact me</h2>
+  <p class="contact-intro">Have a project, opportunity, or question? Leave me a message.</p>
+  <form action={endpoint || undefined} method="POST" data-contact-form>
+    <div class="contact-fields">
+      <label>Your name<input name="name" autocomplete="name" required maxlength="100" /></label>
+      <label>Your email<input type="email" name="email" autocomplete="email" required maxlength="254" /></label>
+    </div>
+    <label>Message<textarea name="message" rows="5" required maxlength="5000"></textarea></label>
+    <div class="sr-only" aria-hidden="true"><label>Leave this empty<input name="_gotcha" tabindex="-1" autocomplete="off" /></label></div>
+    <button type="submit" disabled={!endpoint}>Send message</button>
+    <p class="contact-status" role="status" aria-live="polite">{!endpoint && 'The contact form will be available soon.'}</p>
+  </form>
+</section>
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+  const status = form?.querySelector<HTMLElement>('.contact-status');
+  let sending = false;
+  form?.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (!form.hasAttribute('action') || sending || !form.reportValidity() || !button || !status) return;
+    sending = true;
+    button.disabled = true;
+    button.textContent = 'Sending…';
+    status.textContent = '';
+    try {
+      const response = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+      if (!response.ok) throw new Error('Submission failed');
+      form.reset();
+      status.textContent = 'Thanks! Your message has been sent.';
+    } catch {
+      status.textContent = 'Your message could not be sent. Please try again. Your text is still here.';
+    } finally {
+      sending = false;
+      button.disabled = false;
+      button.textContent = 'Send message';
+    }
+  });
+</script>
+<style>
+  .contact-box { max-width:760px; margin:64px auto 0; padding:32px; background:var(--paper); border-radius:12px; }
+  .contact-intro { margin:12px 0 28px; font-size:20px; line-height:1.5; }
+  .contact-fields { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  label { display:flex; flex-direction:column; gap:8px; font-size:18px; margin-bottom:20px; }
+  input,textarea { width:100%; min-width:0; border:1px solid #a8b4bb; border-radius:6px; background:#fff; padding:12px; color:var(--ink); font:inherit; }
+  textarea { resize:vertical; min-height:140px; }
+  input:focus-visible,textarea:focus-visible { outline:2px solid var(--heading); outline-offset:2px; }
+  button { background:var(--heading); color:#fff; border:0; border-radius:6px; padding:12px 24px; font-size:18px; }
+  button:disabled { opacity:.55; cursor:default; }
+  .contact-status { margin-top:16px; min-height:1.5em; font-size:16px; line-height:1.5; }
+  @media (max-width:799px) { .contact-fields { grid-template-columns:1fr; gap:0; } .contact-intro { font-size:18px; } }
+  @media (max-width:599px) { .contact-box { margin-top:40px; padding:24px 20px; } h2 { font-size:25px; } label { font-size:17px; } }
+</style>

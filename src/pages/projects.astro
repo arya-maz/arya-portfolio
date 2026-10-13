@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeading from '../components/PageHeading.astro';
+import DesignMedia from '../components/DesignMedia.astro';
+---
+<Layout title="Projects" page="Projects">
+  <PageHeading title="Projects" subtitle="A selection of things I’ve built." />
+  <div class="project-list">
+    {[0, 1].map(i => <article class:list={['media-row', { 'image-left': i === 1 }]}>
+      <div class="row-copy"><h2>Project title</h2><p>A short description of the project, the problem it solves, and what I built.</p></div>
+      <DesignMedia desktop={i === 0 ? '20-30' : '20-40'} mobile={i === 0 ? '23-270' : '23-279'} alt="Project image placeholder" />
+    </article>)}
+  </div>
+</Layout>

@@ -1,19 +1,70 @@
 ---
-import "../styles/global.css";
+import Layout from '../layouts/Layout.astro';
+const name = 'Arya Mazandarani';
+let nameIndex = 0;
+const nameWords = name.split(' ').map(word => Array.from(word).map(letter => ({ letter, delay: nameIndex++ * 30 })));
+const paragraphs = ["I am a recent Computer Science graduate from NJIT -- working on creating ambitious, scalable, and practical projects for real people to use and benefit from.", "Currently seeking a full-time position that would apply my ambition and expertise into building reliable systems to help people solve meaningful problems", "When I'm not building tech projects, you can find me working out, going on adventurous walks, or playing guitar.", "Learn more about me and my journey by navigating to the other pages above!"];
+const highlightedPhrase = 'seeking a full-time position';
+const entries = paragraphs.map(text => {
+  let characterIndex = 0;
+  const highlightStart = text.indexOf(highlightedPhrase);
+  let offset = 0;
+  return {
+    text,
+    tokens: text.split(/(\s+)/).filter(Boolean).map(token => {
+      const highlighted = highlightStart >= 0 && offset >= highlightStart && offset < highlightStart + highlightedPhrase.length;
+      offset += token.length;
+      const characters = Array.from(token).map(character => ({ character, delay: 1250 + characterIndex++ * 14 }));
+      return { whitespace: /^\s+$/.test(token), highlighted, characters, markerDelay: characters[0].delay + 80, markerDuration: characters.length * 14 + 140 };
+    }),
+  };
+});
 ---
+<Layout title="Home" page="Home">
+  <h1 class="home-heading">
+    <span class="sr-only">{name}</span>
+    <span class="name-display" aria-hidden="true">{nameWords.map((word, index) => <><span class="name-word">{word.map(item => <span class="name-letter" style={`--name-delay:${item.delay}ms`}>{item.letter}</span>)}</span>{index < nameWords.length - 1 ? ' ' : ''}</>)}</span>
+  </h1>
+  <section class="notebook" aria-label="Introduction">
+    <div class="notebook-ruling" aria-hidden="true"></div>
+    <div class="notebook-holes" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="notebook-copy">
+      {entries.map(entry => <p>
+        <span class="sr-only">{entry.text}</span>
+        <span aria-hidden="true">{entry.tokens.map(token =>
+          <span class:list={[{ 'ink-word': !token.whitespace, 'ink-highlight': token.highlighted }]} style={token.highlighted ? `--marker-delay: ${token.markerDelay}ms; --marker-duration: ${token.markerDuration}ms` : undefined}>
+            {token.whitespace ? token.characters.map(item => item.character).join('') : token.characters.map(item => <span class="ink-character" style={`--ink-delay: ${item.delay}ms`}>{item.character}</span>)}
+          </span>
+        )}</span>
+      </p>)}
+    </div>
+  </section>
+</Layout>
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Arya | Portfolio</title>
-  </head>
-  <body class="min-h-screen bg-slate-950 text-white">
-    <main class="mx-auto max-w-5xl px-6 py-24">
-      <h1 class="text-5xl font-bold">Arya’s Portfolio</h1>
-      <p class="mt-4 text-lg text-slate-300">
-        Built with Astro, TypeScript, and Tailwind CSS.
-      </p>
-    </main>
-  </body>
-</html>
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .name-letter { animation: name-arrives 550ms cubic-bezier(.22, 1, .36, 1) var(--name-delay) both; }
+    .name-display::after { animation: underline-arrives 450ms ease-out 700ms both; }
+    .ink-highlight { animation: marker-sweep var(--marker-duration) ease-out var(--marker-delay) both; }
+    .ink-character { animation: ink-appears 150ms ease-out var(--ink-delay) both; }
+  }
+  .home-heading { font-family:'Delius', sans-serif; font-weight:400; }
+  .name-display { position:relative; display:inline-block; max-width:100%; }
+  .name-word { white-space:nowrap; }
+  .name-letter { display:inline-block; }
+  .name-display::after { content:''; position:absolute; left:8%; right:8%; bottom:-8px; height:7px; border-bottom:3px solid #c44848; border-radius:50%; transform:rotate(-1deg); transform-origin:left; }
+  @keyframes underline-arrives { from { transform:rotate(-1deg) scaleX(0); } to { transform:rotate(-1deg) scaleX(1); } }
+  .notebook-copy { font-family: 'Patrick Hand', sans-serif; font-size:var(--notebook-font-size, 28px); }
+  @media (max-width:599px) { .notebook-copy { font-size:20px; } }
+  .ink-highlight { background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20d%3D%22M0%2023%20L14%2019%20L32%2022%20L51%2017%20L75%2021%20L98%2018%20L100%2026%20L98%2086%20L78%2090%20L58%2086%20L37%2089%20L15%2085%20L1%2088%20Z%22%20fill%3D%22%23F8E99A%22%2F%3E%3Cpath%20d%3D%22M0%2061%20L24%2057%20L52%2063%20L77%2058%20L100%2061%20L99%2073%20L73%2069%20L48%2074%20L22%2068%20L0%2072%20Z%22%20fill%3D%22%23E8CF62%22%20opacity%3D%22.16%22%2F%3E%3C%2Fsvg%3E"); background-repeat:no-repeat; background-position:left center; background-size:100% 100%; }
+  @keyframes marker-sweep { from { background-size:0% 100%; } to { background-size:100% 100%; } }
+  .ink-word { white-space: nowrap; }
+  @keyframes name-arrives {
+    from { opacity: 0; transform: translateY(12px); filter: blur(4px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+  @keyframes ink-appears {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
