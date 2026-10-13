@@ -1,16 +1,88 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PageHeading from '../components/PageHeading.astro';
+
+// Add, remove, or reorder entries to update your work history.
+// Put logos in public/images/companies and use /images/companies/file.png.
+// Add each responsibility or achievement as a string in accomplishments.
+const experiences = [
+  {
+    company: 'B The Cause',
+    role: 'Full-Stack Developer',
+    startDate: 'February 2025',
+    endDate: 'August 2025', // Use 'Present' for a current position.
+    location: 'Newark, NJ',
+    logo: '/design/20-89.svg',
+    logoAlt: 'Company logo placeholder',
+    accomplishments: [
+      'Developed and supported The Village using Vue.js, Django, PostgreSQL, and REST APIs, troubleshooting front-end, back-end, and data-flow issues across the application stack.',
+      'Resolved 100% of assigned Jira tickets by reproducing issues, identifying root causes, implementing and testing fixes, documenting progress, and submitting Git pull requests.',
+      'Collaborated with the CTO, stakeholders, and developers to translate user needs into technical requirements and communicate project updates during weekly standups.',
+    ],
+
+  },
+  {
+    company: 'SVAM International',
+    role: 'Cybersecurity Analyst Intern',
+    startDate: 'June 2023',
+    endDate: 'August 2023',
+    location: 'New York, NY',
+    logo: '/design/20-94.svg',
+    logoAlt: 'Company logo placeholder',
+    accomplishments: [
+      'Monitored client network traffic and security activity to investigate suspicious behavior, unauthorized access attempts, and potential cybersecurity risks.',
+      'Provided on-site and remote technical support for software installation, configuration, connectivity, access, and user-system issues across client environments.',
+    ],
+  },
+  {
+    company: 'Najmee Technologies',
+    role: 'Information Technology Consultant',
+    startDate: 'January 2021',
+    endDate: 'June 2021',
+    location: 'Carlstadt, NJ',
+    logo: '/design/20-94.svg',
+    logoAlt: 'Company logo placeholder',
+    accomplishments: [
+      'Provided on-site and remote IT support for 12+ client organizations, troubleshooting hardware, software, connectivity, account access, and endpoint issues in a managed services environment.',
+      'Configured, deployed, and maintained 100+ laptops, desktops, and servers, including operating system setup, software installation, device configuration, and troubleshooting.',
+      'Administered user accounts, software licenses, Microsoft Office 365, cloud services, and access permissions while supporting client user onboarding and account provisioning.',
+      'Prepared systems for new employees and documented recurring technical issues, configuration steps, and resolutions to improve consistency across support requests.',
+    ],
+  },
+];
 ---
 <Layout title="Experience" page="Experience">
   <PageHeading title="Experience" subtitle="Where I’ve worked and what I’ve contributed." />
   <div class="experience-list">
-    {[0, 1].map(i => <article class="experience-row">
-      <div class="row-copy"><div class="experience-heading"><h2>Company name · Job title</h2><div class="company-mobile"><img src={`/design/${i === 0 ? '23-298' : '23-304'}.svg`} width="80" height="80" alt="" /><img class="building-symbol" src={`/design/${i === 0 ? '23-300' : '23-306'}.svg`} width="38" height="34" alt="Company logo placeholder" /></div></div><div class="experience-copy">
-        <p>Month YYYY – Month YYYY&nbsp; · &nbsp;Location</p>
-        <ul><li>Describe a key responsibility and the work you owned.</li><li>Highlight a contribution, including the tools or skills you used.</li><li>Share an outcome or measurable impact from your work.</li></ul>
-      </div></div>
-      <img class="company-desktop" src={`/design/${i === 0 ? '20-89' : '20-94'}.svg`} width="160" height="160" alt="Company logo placeholder" />
-    </article>)}
+    {experiences.map(experience => (
+      <article class="experience-row">
+        <img class="experience-logo" src={experience.logo} alt={experience.logoAlt} width="160" height="160" loading="lazy" />
+        <div class="row-copy">
+          <div class="experience-heading"><h2>{experience.company} · {experience.role}</h2></div>
+          <div class="experience-copy">
+            <p class="experience-dates">{experience.startDate} – {experience.endDate}{experience.location && ` · ${experience.location}`}</p>
+            {experience.accomplishments.length > 0 && <ul>{experience.accomplishments.map(item => <li>{item}</li>)}</ul>}
+          </div>
+        </div>
+      </article>
+    ))}
   </div>
 </Layout>
+<style>
+  .experience-copy li + li { margin-top:10px; }
+  .experience-logo { display:block; width:160px; height:160px; object-fit:contain; border-radius:12px; }
+  @media (min-width:600px) {
+    .experience-row { display:flow-root; min-height:0; }
+    .row-copy { display:contents; }
+    .experience-heading { display:block; }
+    .experience-heading h2 { top:0; }
+    .experience-logo { float:right; margin:0 0 24px clamp(24px, calc(3.81vw + 1.14px), 56px); }
+  }
+  @media (max-width:599px) {
+    .experience-row { display:grid; grid-template-columns:minmax(0,1fr) 80px; column-gap:16px; row-gap:20px; align-items:center; }
+    .row-copy { display:contents; }
+    .experience-heading { grid-column:1; grid-row:1; display:block; }
+    .experience-logo { grid-column:2; grid-row:1; width:80px; height:80px; }
+    .experience-copy { grid-column:1 / -1; grid-row:2; margin-top:0; }
+  }
+</style>
