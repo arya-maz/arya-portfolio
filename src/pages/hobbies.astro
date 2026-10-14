@@ -3,6 +3,19 @@ import Layout from '../layouts/Layout.astro';
 import PageHeading from '../components/PageHeading.astro';
 import MediaGallery from '../components/MediaGallery.astro';
 import { hobbyPosts } from '../data/hobbies';
+
+// Allow inline HTTPS links in paragraph strings while keeping text escaped.
+function paragraphParts(text: string) {
+  const parts: { text: string; href?: string }[] = [];
+  let cursor = 0;
+  for (const match of text.matchAll(/\[([^\]]+)\]\((https:\/\/[^\s)]+)\)/g)) {
+    parts.push({ text: text.slice(cursor, match.index) });
+    parts.push({ text: match[1], href: match[2] });
+    cursor = match.index! + match[0].length;
+  }
+  parts.push({ text: text.slice(cursor) });
+  return parts;
+}
 ---
 <Layout title="Hobbies" page="Hobbies">
   <PageHeading title="Hobbies" subtitle="A behind-the-scenes look into how I spend my time outside of my career." />
@@ -10,16 +23,17 @@ import { hobbyPosts } from '../data/hobbies';
     {hobbyPosts.map(post => <>
       {post.type === 'text' ? <article class="text-post" aria-labelledby={`${post.id}-title`}>
         <h2 id={`${post.id}-title`}>{post.title}</h2>
-        <div class="post-copy">{post.paragraphs.map(paragraph => <p>{paragraph}</p>)}</div>
+        <div class="post-copy">{post.paragraphs.map(paragraph => <p>{paragraphParts(paragraph).map(part => part.href ? <a class="paragraph-link" href={part.href} target="_blank" rel="noopener noreferrer">{part.text}</a> : part.text)}</p>)}</div>
       </article> : <article class:list={['media-row', { 'image-left': post.mediaSide !== 'right' }]} aria-labelledby={`${post.id}-title`}>
         <div class="post-gallery"><MediaGallery items={post.media} title={post.title} id={post.id} /></div>
-        <div class="row-copy"><h2 id={`${post.id}-title`}>{post.title}</h2>{post.paragraphs.map(paragraph => <p>{paragraph}</p>)}</div>
+        <div class="row-copy"><h2 id={`${post.id}-title`}>{post.title}</h2>{post.paragraphs.map(paragraph => <p>{paragraphParts(paragraph).map(part => part.href ? <a class="paragraph-link" href={part.href} target="_blank" rel="noopener noreferrer">{part.text}</a> : part.text)}</p>)}</div>
       </article>}
       <hr />
     </>)}
   </div>
 </Layout>
 <style>
+  .paragraph-link { text-decoration:underline; text-underline-offset:3px; }
   .post-gallery { min-width:0; width:100%; }
   @media (min-width:600px) {
     .media-row,.media-row.image-left { display:flow-root; min-height:0; }

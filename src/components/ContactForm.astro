@@ -13,7 +13,7 @@ const endpoint = /^https:\/\/formspree\.io\/f\/[a-zA-Z0-9]+$/.test(candidate) ? 
     <label>Message<textarea name="message" rows="5" required maxlength="5000"></textarea></label>
     <div class="sr-only" aria-hidden="true"><label>Leave this empty<input name="_gotcha" tabindex="-1" autocomplete="off" /></label></div>
     <button type="submit" disabled={!endpoint}>Send message</button>
-    <p class="contact-status" role="status" aria-live="polite">{!endpoint && 'The contact form will be available soon.'}</p>
+    <p class="contact-status" role="status" aria-live="polite">{!endpoint}</p>
   </form>
 </section>
 <script>

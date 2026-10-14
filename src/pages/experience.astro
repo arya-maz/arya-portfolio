@@ -12,7 +12,7 @@ const experiences = [
     startDate: 'February 2025',
     endDate: 'August 2025', // Use 'Present' for a current position.
     location: 'Newark, NJ',
-    logo: '/design/20-89.svg',
+    logo: 'https://media.licdn.com/dms/image/v2/D4E0BAQHX6SCtJIseHQ/company-logo_400_400/company-logo_400_400/0/1730384364144/b_the_cause_logo?e=1793836800&v=beta&t=evtPTMDxEpb8hz2BEqmiL7khgO_4sPo6Ma7WFqBoxrU',
     logoAlt: 'Company logo placeholder',
     accomplishments: [
       'Developed and supported The Village using Vue.js, Django, PostgreSQL, and REST APIs, troubleshooting front-end, back-end, and data-flow issues across the application stack.',
@@ -27,7 +27,7 @@ const experiences = [
     startDate: 'June 2023',
     endDate: 'August 2023',
     location: 'New York, NY',
-    logo: '/design/20-94.svg',
+    logo: 'https://media.licdn.com/dms/image/v2/D4D0BAQHmSchNyjsgwg/company-logo_400_400/company-logo_400_400/0/1688453169982/svam_international_inc_logo?e=1793836800&v=beta&t=mNn4NwQcuCWX63t4mYoE5iBaYr8yPBqQfZRDhu3VbcM',
     logoAlt: 'Company logo placeholder',
     accomplishments: [
       'Monitored client network traffic and security activity to investigate suspicious behavior, unauthorized access attempts, and potential cybersecurity risks.',
@@ -40,7 +40,7 @@ const experiences = [
     startDate: 'January 2021',
     endDate: 'June 2021',
     location: 'Carlstadt, NJ',
-    logo: '/design/20-94.svg',
+    logo: 'https://media.licdn.com/dms/image/v2/C560BAQGQpQvh-Izetg/company-logo_400_400/company-logo_400_400/0/1655912768235/najmeeit_logo?e=1793836800&v=beta&t=hwEM8Ip8U_MXLjqFdGDXuxrTMkGXRs4Cvm94h4IkjJs',
     logoAlt: 'Company logo placeholder',
     accomplishments: [
       'Provided on-site and remote IT support for 12+ client organizations, troubleshooting hardware, software, connectivity, account access, and endpoint issues in a managed services environment.',
@@ -54,7 +54,7 @@ const experiences = [
 <Layout title="Experience" page="Experience">
   <PageHeading title="Experience" subtitle="Where I’ve worked and what I’ve contributed." />
   <div class="experience-list">
-    {experiences.map(experience => (
+    {experiences.map(experience => (<>
       <article class="experience-row">
         <img class="experience-logo" src={experience.logo} alt={experience.logoAlt} width="160" height="160" loading="lazy" />
         <div class="row-copy">
@@ -65,10 +65,14 @@ const experiences = [
           </div>
         </div>
       </article>
-    ))}
+      <hr />
+    </>))}
   </div>
 </Layout>
 <style>
+  .experience-list { gap:32px; }
+  .experience-list > hr { width:100%; flex-shrink:0; }
+  @media (max-width:599px) { .experience-list { gap:20px; } }
   .experience-copy li + li { margin-top:10px; }
   .experience-logo { display:block; width:160px; height:160px; object-fit:contain; border-radius:12px; }
   @media (min-width:600px) {

@@ -29,8 +29,8 @@ export const hobbyPosts: HobbyPost[] = [
     title: 'Guitar Covers',
     mediaSide: 'right',
     paragraphs: [
-      'I\'m currently working on recording and creating full guitar covers of the entire Deftones album Koi No Yokan',
-      'My commitment is to deliver high-quality renditions of the playing, tone recreation, and overall sound in an attempt to fulfill several goals:',
+      'My current goal is to record and create full guitar covers of the album [Koi No Yokan](https://open.spotify.com/album/4PIVdqvL1Rc7T7Vfsr8n8Q) by Deftones',
+      'I am committed to delivering high-quality renditions of the playing, tone recreation, and overall sound of the album in an attempt to fulfill several goals:',
       '1. Learn a full album that I enjoy -- both rhythm and lead guitar parts -- to the extent where I can accurately play them live',
       '2. Challenge myself by struggling to play songs a notch my skill level in order to sharpen up my abilities through consistent and effective practice.',
       '3. Struggle through the process of tone-matching the guitar tracks. I am using different equipment than what was used in the album\'s recording, and learning to replicate the tones as closely as possible has taught me a TON about how EQ shaping and effects pedals work.',
@@ -41,10 +41,11 @@ export const hobbyPosts: HobbyPost[] = [
   {
     id: 'walks',
     type: 'media',
-    title: 'Scenic Outdoor Walks',
+    title: 'Outdoor Walking / Traveling',
     mediaSide: 'left',
     paragraphs: [
-      'Exercise has been an aspect of my life that has only really become a priority in the last few years. Although I work out several days a week, mostly consisting of weightlifting, walking outdoors when the weather is warm is a feeling like none other.',
+      'An aspect of my life that has really become a priority in the last few years is exercise and health. Although I work out several days a week, sticking to a consistent and effective weightlifting routine, walking outdoors when the weather is warm and brisk is a feeling like none other. However, it\'s the sense of adventure that fuels my ambition to walk and explore the world around me.',
+      'Put simply, my biggest incentive for taking these walks isn\'t just the exercise; it\'s the opportunity to explore a piece of the world from a human level. Wandering through an unfamiliar park, city, neighborhood, cliffside, overlook viewpoint, or trail by foot is a euphoric experience. Admiring the architecture of buildings, the engineering and design of systems, the foliage, the people, and the means of life is simply a wonder of its own. Although, as thrilling as it is to soak everything in within the moment, capturing a stellar photo or a cinematic video of the ambiance creates a lasting memory that can be shared.',
     ],
     media: [
       { type: 'image', src: '/media/hobbies/standing-on-rock.jpeg', alt: 'Ramapo Lake -- Wanaque, NJ' },
