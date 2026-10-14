@@ -1,15 +1,32 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PageHeading from '../components/PageHeading.astro';
-import DesignMedia from '../components/DesignMedia.astro';
+import MediaGallery from '../components/MediaGallery.astro';
+import { hobbyPosts } from '../data/hobbies';
 ---
 <Layout title="Hobbies" page="Hobbies">
   <PageHeading title="Hobbies" subtitle="A behind-the-scenes look into how I spend my time outside of my career." />
   <div class="hobbies-feed">
-    <article class="text-post"><h2>A thought worth sharing</h2><div class="post-copy"><p>This is a space for thoughts, stories, and the interests that keep me curious. A text post flows across the page, with room for a quick update or a longer reflection.</p><p>Add another paragraph whenever there’s more to say. The layout grows with the story.</p></div></article>
-    <hr />
-    <article class="media-row image-left"><div class="row-copy"><h2>A moment in pictures</h2><p>A photo and a few words about the story behind it. Share an interest, a place, or something that caught my eye.</p></div><DesignMedia desktop="20-132" mobile="23-327" alt="Post image placeholder" /></article>
-    <hr />
-    <article class="media-row"><div class="row-copy"><h2>Something to watch</h2><p>A clip, a performance, or a small story in motion, with a little context alongside it.</p></div><DesignMedia desktop="20-148" mobile="23-337" alt="Video preview placeholder; no video supplied yet" /></article>
+    {hobbyPosts.map(post => <>
+      {post.type === 'text' ? <article class="text-post" aria-labelledby={`${post.id}-title`}>
+        <h2 id={`${post.id}-title`}>{post.title}</h2>
+        <div class="post-copy">{post.paragraphs.map(paragraph => <p>{paragraph}</p>)}</div>
+      </article> : <article class:list={['media-row', { 'image-left': post.mediaSide !== 'right' }]} aria-labelledby={`${post.id}-title`}>
+        <div class="post-gallery"><MediaGallery items={post.media} title={post.title} id={post.id} /></div>
+        <div class="row-copy"><h2 id={`${post.id}-title`}>{post.title}</h2>{post.paragraphs.map(paragraph => <p>{paragraph}</p>)}</div>
+      </article>}
+      <hr />
+    </>)}
   </div>
 </Layout>
+<style>
+  .post-gallery { min-width:0; width:100%; }
+  @media (min-width:600px) {
+    .media-row,.media-row.image-left { display:flow-root; min-height:0; }
+    .row-copy { display:contents; }
+    .row-copy h2 { top:0; }
+    .post-gallery { float:right; width:min(62.069%,488.53125px); margin:0 0 24px clamp(24px, calc(3.81vw + 1.14px), 56px); }
+    .image-left .post-gallery { float:left; margin:0 clamp(24px, calc(3.81vw + 1.14px), 56px) 24px 0; }
+  }
+  @media (max-width:599px) { .post-gallery { order:-1; } }
+</style>

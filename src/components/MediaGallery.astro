@@ -1,0 +1,261 @@
+---
+import type { HobbyMedia } from '../data/hobbies';
+interface Props { items: HobbyMedia[]; title: string; id: string }
+const { items, title, id } = Astro.props;
+function embedUrl(raw: string) {
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== 'https:') return '';
+    const host = url.hostname.replace(/^www\./, '');
+    if (['youtube.com', 'm.youtube.com', 'youtu.be', 'youtube-nocookie.com'].includes(host)) {
+      const videoId = host === 'youtu.be' ? url.pathname.split('/')[1] : url.searchParams.get('v') || url.pathname.match(/\/(?:embed|shorts|live)\/([^/]+)/)?.[1];
+      return videoId && /^[\w-]+$/.test(videoId) ? `https://www.youtube-nocookie.com/embed/${videoId}` : '';
+    }
+    if (host === 'instagram.com') {
+      const post = url.pathname.match(/^\/(p|reel|tv)\/([\w-]+)/);
+      return post ? `https://www.instagram.com/${post[1]}/${post[2]}/embed/` : '';
+    }
+    if (host === 'vimeo.com' && /^\/\d+\/?$/.test(url.pathname)) return `https://player.vimeo.com/video/${url.pathname.split('/')[1]}`;
+    return url.href; // Other providers must supply an HTTPS iframe/embed URL.
+  } catch { return ''; }
+}
+---
+<media-gallery class:list={['gallery', { 'gallery-single': items.length === 1 }]} role="region" aria-roledescription="carousel" aria-label={title}>
+  <div class="gallery-stage" tabindex="0" aria-label="Media viewer. Use left and right arrow keys to change slides.">
+    {items.map((item, index) => <div id={`${id}-slide-${index}`} class="gallery-slide" role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${items.length}`} hidden={index !== 0}>
+      <div class="gallery-media-window">
+      {item.type === 'image' && <img class="gallery-image" role="button" tabindex="0" aria-label={`Enlarge ${item.alt}`} src={item.src} alt={item.alt} loading="lazy" />}
+      {item.type === 'video' && <video controls playsinline preload="metadata" src={item.src} poster={item.poster} aria-label={item.title} data-media-src={item.src}>
+        {item.captions && <track kind="captions" src={item.captions} srclang="en" label="English" default />}
+        Your browser does not support this video. <a href={item.src}>Download {item.title}</a>.
+      </video>}
+      {item.type === 'embed' && <div class="embed-wrap">
+        {embedUrl(item.url) && <iframe title={item.title} data-media-src={embedUrl(item.url)} loading="lazy" allow="fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>}
+      </div>}
+      </div>
+      <p class="gallery-caption">{item.type === 'image' ? item.alt : item.type === 'video' ? item.title : ''}</p>
+    </div>)}
+  </div>
+  {items.length > 1 && <div class="gallery-controls" hidden>
+    <div class="gallery-navigation">
+      <button type="button" data-previous aria-label={`Previous media in ${title}`}>←</button>
+      <span class="gallery-count" aria-live="polite" aria-atomic="true">1 / {items.length}</span>
+      <button type="button" data-next aria-label={`Next media in ${title}`}>→</button>
+    </div>
+    <div class="gallery-thumbnails" aria-label="Choose media">
+      {items.map((item, index) => <button type="button" data-slide={index} aria-controls={`${id}-slide-${index}`} aria-label={`Show ${item.type === 'image' ? item.alt : item.title}, ${index + 1} of ${items.length}`} aria-current={index === 0 ? 'true' : undefined}>
+        {(item.thumbnail || item.type === 'image' || (item.type === 'video' && item.poster))
+          ? <img src={item.thumbnail || (item.type === 'image' ? item.src : item.type === 'video' ? item.poster : '')} alt="" loading="lazy" />
+          : <span aria-hidden="true">{item.type === 'video' ? '▶' : '↗'} {index + 1}</span>}
+      </button>)}
+    </div>
+  </div>}
+  <dialog class="gallery-lightbox" aria-label="Enlarged media">
+    <button type="button" class="lightbox-close" aria-label="Close enlarged media">×</button>
+    <div class="lightbox-media"></div>
+    <p class="lightbox-caption"></p>
+  </dialog>
+  <noscript><style>.gallery-slide[hidden] { display:block !important; margin-top:16px; }</style><p>Images and local videos are shown below. Enable JavaScript to view embedded media.</p></noscript>
+</media-gallery>
+<script>
+  class MediaGallery extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.ready) return;
+      this.dataset.ready = 'true';
+      const slides = Array.from(this.querySelectorAll<HTMLElement>('.gallery-slide'));
+      if (slides.length > 1) {
+        const media = slides.map(slide => slide.querySelector<HTMLImageElement | HTMLVideoElement | HTMLIFrameElement>('.gallery-image, video, iframe'));
+        const updateWindow = () => {
+          const dimensions = media.map(item => item instanceof HTMLImageElement
+            ? [item.naturalWidth, item.naturalHeight]
+            : item instanceof HTMLVideoElement ? [item.videoWidth, item.videoHeight] : [480, 270]);
+          const known = dimensions.filter(([width, height]) => width > 0 && height > 0);
+          if (!known.length) return;
+          // Measure each item after fitting it into the cap, preserving its proportions.
+          const fitted = known.map(([width, height]) => {
+            const scale = Math.min(1, 480 / width, 480 / height);
+            return [width * scale, height * scale];
+          });
+          const width = Math.max(...fitted.map(([width]) => width));
+          const height = Math.max(...fitted.map(([, height]) => height));
+          this.style.setProperty('--gallery-window-width', `${width}px`);
+          this.style.setProperty('--gallery-window-ratio', `${width} / ${height}`);
+        };
+        const ready = media.map(item => new Promise<void>(resolve => {
+          if (item instanceof HTMLImageElement) {
+            item.loading = 'eager';
+            if (item.complete) { resolve(); return; }
+            item.addEventListener('load', () => resolve(), { once:true });
+            item.addEventListener('error', () => resolve(), { once:true });
+          } else if (item instanceof HTMLVideoElement) {
+            if (item.readyState >= 1 || item.error) { resolve(); return; }
+            item.addEventListener('loadedmetadata', () => resolve(), { once:true });
+            item.addEventListener('error', () => resolve(), { once:true });
+          } else resolve();
+        }));
+        void Promise.all(ready).then(updateWindow);
+      }
+      const thumbnails = Array.from(this.querySelectorAll<HTMLButtonElement>('[data-slide]'));
+      const stage = this.querySelector<HTMLElement>('.gallery-stage');
+      const count = this.querySelector('.gallery-count');
+      const thumbnailStrip = this.querySelector<HTMLElement>('.gallery-thumbnails');
+      const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+      const dialog = this.querySelector<HTMLDialogElement>('.gallery-lightbox')!;
+      const lightboxMedia = dialog.querySelector<HTMLElement>('.lightbox-media')!;
+      let originalMedia: HTMLImageElement | HTMLVideoElement | HTMLIFrameElement | undefined;
+      let placeholder: Comment | undefined;
+      let opener: HTMLElement | undefined;
+      let previousOverflow = '';
+      const mountMedia = (media: HTMLImageElement | HTMLVideoElement | HTMLIFrameElement) => {
+        originalMedia = media;
+        placeholder = document.createComment('Enlarged media position');
+        media.before(placeholder);
+        lightboxMedia.append(media);
+        dialog.querySelector('.lightbox-caption')!.textContent = media instanceof HTMLImageElement ? media.alt : media.getAttribute('aria-label') || media.getAttribute('title');
+      };
+      const enlarge = (media: HTMLImageElement | HTMLVideoElement, trigger: HTMLElement) => {
+        if (dialog.open) return;
+        opener = trigger;
+        mountMedia(media);
+        previousOverflow = document.documentElement.style.overflow;
+        document.documentElement.style.overflow = 'hidden';
+        dialog.showModal();
+        window.addEventListener('keydown', navigateExpanded, true);
+        dialog.querySelector<HTMLButtonElement>('.lightbox-close')!.focus();
+      };
+      dialog.querySelector('.lightbox-close')!.addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', event => {
+        if (event.target === dialog || event.target === lightboxMedia) dialog.close();
+      });
+      dialog.addEventListener('close', () => {
+        window.removeEventListener('keydown', navigateExpanded, true);
+        if (originalMedia && placeholder) placeholder.replaceWith(originalMedia);
+        document.documentElement.style.overflow = previousOverflow;
+        opener?.focus({ preventScroll:true });
+        originalMedia = undefined;
+        placeholder = undefined;
+      });
+      this.querySelectorAll<HTMLImageElement>('.gallery-image').forEach(image => {
+        image.addEventListener('click', () => { if (!dialog.open) enlarge(image, image); });
+        image.addEventListener('keydown', event => {
+          if (!dialog.open && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); enlarge(image, image); }
+        });
+      });
+      this.querySelectorAll<HTMLVideoElement>('.gallery-media-window video').forEach(video => {
+        video.addEventListener('click', event => {
+          // Keep the native playback controls usable without opening the viewer.
+          if (!dialog.open && event.clientY < video.getBoundingClientRect().bottom - 48) enlarge(video, video);
+        });
+      });
+      let initialSelection = true;
+      let current = 0;
+      const show = (next: number) => {
+        if (!slides.length) return;
+        current = (next + slides.length) % slides.length;
+        slides.forEach((slide, index) => {
+          slide.hidden = index !== current;
+          slide.querySelectorAll<HTMLVideoElement>('video').forEach(video => {
+            if (slide.hidden) video.pause();
+            else if (!video.hasAttribute('src')) video.src = video.dataset.mediaSrc || '';
+          });
+          slide.querySelectorAll<HTMLIFrameElement>('iframe').forEach(frame => {
+            if (slide.hidden) frame.removeAttribute('src'); // Stop hidden embeds.
+            else if (!frame.hasAttribute('src')) frame.src = frame.dataset.mediaSrc || '';
+          });
+        });
+        thumbnails.forEach((button, index) => {
+          if (index === current) button.setAttribute('aria-current', 'true');
+          else button.removeAttribute('aria-current');
+        });
+        if (count) count.textContent = `${current + 1} / ${slides.length}`;
+        const selectedThumbnail = thumbnails[current];
+        if (thumbnailStrip && selectedThumbnail) {
+          const stripBounds = thumbnailStrip.getBoundingClientRect();
+          const thumbnailBounds = selectedThumbnail.getBoundingClientRect();
+          const target = thumbnailStrip.scrollLeft + thumbnailBounds.left - stripBounds.left
+            - thumbnailStrip.clientLeft + thumbnailBounds.width / 2 - thumbnailStrip.clientWidth / 2;
+          thumbnailStrip.scrollTo({
+            left: Math.max(0, Math.min(target, thumbnailStrip.scrollWidth - thumbnailStrip.clientWidth)),
+            behavior: initialSelection || reducedMotion.matches ? 'instant' : 'smooth'
+          });
+        }
+        initialSelection = false;
+      };
+      this.querySelector<HTMLElement>('.gallery-controls')?.removeAttribute('hidden');
+      this.querySelector('[data-previous]')?.addEventListener('click', () => show(current - 1));
+      this.querySelector('[data-next]')?.addEventListener('click', () => show(current + 1));
+      thumbnails.forEach(button => button.addEventListener('click', () => show(Number(button.dataset.slide))));
+      const navigateExpanded = (event: KeyboardEvent) => {
+        if (!dialog.open) return;
+        if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+        event.preventDefault();
+        event.stopPropagation();
+        if (originalMedia && placeholder) placeholder.replaceWith(originalMedia);
+        originalMedia = undefined;
+        placeholder = undefined;
+        show(current + (event.key === 'ArrowRight' ? 1 : -1));
+        const media = slides[current].querySelector<HTMLImageElement | HTMLVideoElement | HTMLIFrameElement>('.gallery-image, video, iframe');
+        if (media) mountMedia(media);
+        opener = thumbnails[current] || stage || undefined;
+        // Moving the focused media out of the dialog can leave focus on the page.
+        dialog.querySelector<HTMLButtonElement>('.lightbox-close')!.focus({ preventScroll:true });
+      };
+      stage?.addEventListener('keydown', event => {
+        if (event.target !== stage) return;
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') { event.preventDefault(); show(current + (event.key === 'ArrowRight' ? 1 : -1)); }
+        if (event.key === 'Home' || event.key === 'End') { event.preventDefault(); show(event.key === 'Home' ? 0 : slides.length - 1); }
+      });
+      let start: { x: number; y: number } | undefined;
+      stage?.addEventListener('pointerdown', event => {
+        if (event.pointerType === 'mouse' || !(event.target instanceof Element) || event.target.closest('video, iframe, a, button')) return;
+        start = { x: event.clientX, y: event.clientY };
+      });
+      stage?.addEventListener('pointerup', event => {
+        if (!start) return;
+        const dx = event.clientX - start.x, dy = event.clientY - start.y;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) show(current + (dx < 0 ? 1 : -1));
+        start = undefined;
+      });
+      stage?.addEventListener('pointercancel', () => { start = undefined; });
+      show(0);
+    }
+  }
+  if (!customElements.get('media-gallery')) customElements.define('media-gallery', MediaGallery);
+</script>
+<style>
+  .gallery { display:block; min-width:0; width:100%; max-width:var(--gallery-window-width, 480px); margin-inline:auto; }
+  .gallery-stage { background:transparent; border-radius:0; overflow:visible; touch-action:pan-y; }
+  .gallery-stage:focus { outline:none; }
+  .gallery-slide[hidden] { display:none; }
+  .gallery-slide:not([hidden]) { display:flex; flex-direction:column; align-items:center; }
+  .gallery-media-window { position:relative; width:100%; aspect-ratio:var(--gallery-window-ratio, 1); min-width:0; min-height:0; flex:none; }
+  .gallery-caption { margin:8px 0 0; width:100%; height:39px; font-size:13px; line-height:19.5px; text-align:center; color:var(--ink); overflow-wrap:anywhere; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; }
+  .gallery-image,video { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); display:block; width:auto; height:auto; max-width:100%; max-height:100%; object-fit:contain; }
+  .gallery-single { max-width:none; }
+  .gallery-single .gallery-media-window { aspect-ratio:auto; display:flex; justify-content:center; }
+  .gallery-single .gallery-media-window .gallery-image,
+  .gallery-single .gallery-media-window video { position:static; transform:none; width:auto; height:auto; max-width:100%; max-height:none; }
+  .gallery-single .embed-wrap { position:static; transform:none; }
+  .gallery-single .gallery-caption:empty { display:none; }
+  .gallery-single .gallery-caption { height:auto; display:block; overflow:visible; -webkit-line-clamp:unset; }
+  .gallery-image, video, iframe { box-shadow:0 3px 10px rgb(23 54 75 / 16%); }
+  .embed-wrap { position:absolute; top:50%; left:0; transform:translateY(-50%); width:100%; }
+  iframe { display:block; border:0; width:100%; aspect-ratio:16/9; background:transparent; }
+  .gallery-navigation { display:flex; align-items:center; justify-content:center; gap:16px; margin-top:12px; }
+  .gallery-navigation button { width:44px; height:44px; border:1px solid #a8b4bb; border-radius:50%; background:var(--paper); color:var(--heading); font-size:24px; }
+  .gallery-count { min-width:48px; text-align:center; font-size:16px; }
+  .gallery-thumbnails { display:flex; gap:8px; overflow-x:auto; padding:8px 4px 4px; }
+  .gallery-thumbnails button { flex:0 0 60px; width:60px; height:48px; padding:2px; border:2px solid transparent; border-radius:0; background:var(--paper); color:var(--heading); }
+  .gallery-thumbnails button[aria-current='true'] { border-color:var(--heading); }
+  .gallery-thumbnails img { width:100%; height:100%; object-fit:cover; border-radius:0; }
+  .gallery-controls[hidden] { display:none; }
+  .gallery-image { cursor:zoom-in; }
+  .gallery-lightbox { position:fixed; inset:0; margin:auto; padding:48px 24px 20px; width:100vw; height:100dvh; max-width:100vw; max-height:100dvh; border:0; background:transparent; color:white; overflow:auto; }
+  .gallery-lightbox[open] { display:flex; flex-direction:column; justify-content:center; align-items:center; gap:12px; }
+  .gallery-lightbox::backdrop { background:rgb(55 58 64 / 65%); }
+  .lightbox-media { display:flex; align-items:center; justify-content:center; width:100%; min-height:0; }
+  .lightbox-media .gallery-image, .lightbox-media video, .lightbox-media iframe { position:static; transform:none; width:auto; height:auto; max-width:85vw; max-height:min(75dvh, calc(100dvh - 140px)); object-fit:contain; box-shadow:0 8px 32px rgb(0 0 0 / 25%); cursor:default; }
+  .lightbox-media iframe { width:85vw; height:min(47.8125vw, 75dvh); }
+  .lightbox-caption { margin:0; max-width:90vw; font-size:14px; line-height:1.5; text-align:center; }
+  .lightbox-close { position:fixed; top:12px; right:16px; width:40px; height:40px; border:0; border-radius:50%; background:rgb(48 58 67 / 80%); color:white; font-size:30px; cursor:pointer; }
+</style>
