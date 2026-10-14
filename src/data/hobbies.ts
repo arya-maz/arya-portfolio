@@ -48,10 +48,11 @@ export const hobbyPosts: HobbyPost[] = [
       'Put simply, my biggest incentive for taking these walks isn\'t just the exercise; it\'s the opportunity to explore a piece of the world from a human level. Wandering through an unfamiliar park, city, neighborhood, cliffside, overlook viewpoint, or trail by foot is a euphoric experience. Admiring the architecture of buildings, the engineering and design of systems, the foliage, the people, and the means of life is simply a wonder of its own. Although, as thrilling as it is to soak everything in within the moment, capturing a stellar photo or a cinematic video of the ambiance creates a lasting memory that can be shared.',
     ],
     media: [
-      { type: 'image', src: '/media/hobbies/standing-on-rock.jpeg', alt: 'Ramapo Lake -- Wanaque, NJ' },
-      { type: 'image', src: '/media/hobbies/red-bank-downtown.jpeg', alt: 'Downtown -- Red Bank, NJ' },
-      { type: 'video', src: '/media/hobbies/big-sur-video.mov', title: 'Pacific Coast Highway (Rt. 1) -- Big Sur, CA', thumbnail: '/media/hobbies/big-sur-video.jpeg' },
-      { type: 'image', src: '/media/hobbies/nyc-hamilton-park.jpeg', alt: 'NYC Skyline from Hamilton Park -- Weehawken, NJ' },
+      { type: 'image', src: '/media/hobbies/standing-on-rock.jpeg', alt: 'Ramapo Lake -- Wanaque, NJ', thumbnail: '/media/hobbies/standing-on-rock-THUMBNAIL.jpeg' },
+      { type: 'image', src: '/media/hobbies/red-bank-downtown.jpeg', alt: 'Downtown -- Red Bank, NJ', thumbnail: '/media/hobbies/red-bank-downtown-THUMBNAIL.jpeg' },
+      { type: 'video', src: '/media/hobbies/big-sur-video.mov', title: 'Pacific Coast Highway (Rt. 1) -- Big Sur, CA', thumbnail: '/media/hobbies/big-sur-video-THUMBNAIL.jpeg' },
+      { type: 'image', src: '/media/hobbies/nyc-hamilton-park.jpeg', alt: 'NYC Skyline from Hamilton Park -- Weehawken, NJ', thumbnail: '/media/hobbies/nyc-hamilton-park-THUMBNAIL.jpeg' },
+      { type: 'image', src: '/media/hobbies/san-diego-beach.jpeg', alt: 'Sunset Cliffs -- San Diego, CA', thumbnail: '/media/hobbies/san-diego-beach-THUMBNAIL.jpeg' },
       // Temporary thumbnail preview: remove this block after reviewing.
       // ...Array.from({ length: 20 }, (_, index) => {
       //   const number = index + 1;
