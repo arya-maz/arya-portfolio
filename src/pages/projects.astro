@@ -4,7 +4,7 @@ import PageHeading from '../components/PageHeading.astro';
 
 // Add, remove, or reorder these entries to update your Projects page.
 // Put screenshots in public/images/projects, then use /images/projects/file.png.
-// Leave github blank to hide the link. mobileImage is optional.
+// Leave github blank to hide the link. Images are shared across screen sizes.
 const projects = [
   {
     title: 'Liner Notes — Album Discovery App',
@@ -13,8 +13,7 @@ const projects = [
       'Using React, Python, and FastAPI, I developed and carefully refined a recommendation pipeline that balances familiarity with discovery, filtered out irrelevant results (extremely familiar albums, duplicate editions), and lets listeners open recommendations directly in Spotify.'
       ],
     image: '/images/projects/liner-notes-homepage.png',
-    mobileImage: '/design/23-270.svg',
-    alt: 'Project image placeholder',
+    alt: 'Liner Notes album discovery app homepage',
     github: 'https://github.com/arya-maz/music-recommendation-app',
   },
   {
@@ -35,7 +34,6 @@ const projects = [
     {projects.map((project, index) => (<>
       <article class:list={['media-row', { 'image-left': index % 2 === 1 }]}>
         <picture class="design-media">
-          {project.mobileImage && <source media="(max-width: 599px)" srcset={project.mobileImage} />}
           <img src={project.image} alt={project.alt} width="720" height="360" loading="lazy" />
         </picture>
         <div class="row-copy">
