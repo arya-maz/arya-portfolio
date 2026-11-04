@@ -29,14 +29,15 @@ export const hobbyPosts: HobbyPost[] = [
     title: 'Guitar Covers',
     mediaSide: 'right',
     paragraphs: [
-      'My current goal is to record and create full guitar covers of the album [Koi No Yokan](https://open.spotify.com/album/4PIVdqvL1Rc7T7Vfsr8n8Q) by Deftones',
-      'I am committed to delivering high-quality renditions of the playing, tone recreation, and overall sound of the album in an attempt to fulfill several goals:',
-      '1. Learn a full album that I enjoy -- both rhythm and lead guitar parts -- to the extent where I can accurately play them live',
-      '2. Challenge myself by struggling to play songs a notch my skill level in order to sharpen up my abilities through consistent and effective practice.',
-      '3. Struggle through the process of tone-matching the guitar tracks. I am using different equipment than what was used in the album\'s recording, and learning to replicate the tones as closely as possible has taught me a TON about how EQ shaping and effects pedals work.',
-      'I take great pride in my work, and pushing myself to upload and publicize my progress gives me the pressure I need to ensure nothing but the highest quality gets released to the world, as it is a reflection of myself and my work.',
+      "I've always been heavily into music, but picking up the guitar has taken it to a higher level. I recently have taken up recording covers of some of my favorite songs to play, and uploading them to YouTube in an effort to become more deeply acquainted to these songs and how they're developed and played.",
+      "My level of commitment to delivering high-quality covers is astronomical, aspiring to achieve accurate recreations of the playing, tonal palette, and overall sound of the songs. My most recent cover is displayed right here.",
+      "Some of my current goals are:",
+      "1. Learn a full album from front to back -- a challenge that I ambitiously attempted very early on in my time playing, but am committed to now with more knowledge and technical skill under my belt.",
+      "2. Challenge myself by learning songs above my skill level in order to sharpen up my abilities through consistent and effective practice.",
+      "3. Get more acquainted with tone-matching and EQ. I've been learning about tone, audio engineering, and about different guitar equipment and their effects on the overall sound of playing. I find it extremely fascinating, and it's such a layered concept.",
+      "Across all fields, I take great pride and put a lot of effort into my work, and my covers are no exception. I push myself to strive for a great product to be able to show others and maybe inspire other players to start creating covers of their own.",
     ],
-    media: [{ type: 'embed', url: 'https://www.youtube.com/watch?v=fLBqSkWb1WE', title: 'Deftones - Swerve City [Guitar Cover]'}],
+    media: [{ type: 'embed', url: 'https://www.youtube.com/watch?v=SQBK_MVjxxQ', title: 'Deftones - Rats!Rats!Rats! [Guitar Cover]'}],
   },
   {
     id: 'walks',
@@ -50,7 +51,7 @@ export const hobbyPosts: HobbyPost[] = [
     media: [
       { type: 'image', src: '/media/hobbies/standing-on-rock.jpeg', alt: 'Ramapo Lake -- Wanaque, NJ', thumbnail: '/media/hobbies/standing-on-rock-THUMBNAIL.jpeg' },
       { type: 'image', src: '/media/hobbies/red-bank-downtown.jpeg', alt: 'Downtown -- Red Bank, NJ', thumbnail: '/media/hobbies/red-bank-downtown-THUMBNAIL.jpeg' },
-      { type: 'video', src: '/media/hobbies/big-sur-video.mov', title: 'Pacific Coast Highway (Rt. 1) -- Big Sur, CA', thumbnail: '/media/hobbies/big-sur-video-THUMBNAIL.jpeg' },
+      { type: 'video', src: '/media/hobbies/big-sur-video.mp4', title: 'Pacific Coast Highway (Rt. 1) -- Big Sur, CA', thumbnail: '/media/hobbies/big-sur-video-THUMBNAIL.jpeg' },
       { type: 'image', src: '/media/hobbies/nyc-hamilton-park.jpeg', alt: 'NYC Skyline from Hamilton Park -- Weehawken, NJ', thumbnail: '/media/hobbies/nyc-hamilton-park-THUMBNAIL.jpeg' },
       { type: 'image', src: '/media/hobbies/san-diego-beach.jpeg', alt: 'Sunset Cliffs -- San Diego, CA', thumbnail: '/media/hobbies/san-diego-beach-THUMBNAIL.jpeg' },
       // Temporary thumbnail preview: remove this block after reviewing.
