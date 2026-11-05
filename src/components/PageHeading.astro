@@ -2,4 +2,14 @@
 interface Props { title: string; subtitle: string }
 const { title, subtitle } = Astro.props;
 ---
-<div class="page-heading"><h1>{title}</h1><p>{subtitle}</p></div>
+<div class="page-heading">
+  {Astro.slots.has('aside') ? <div class="heading-title-row"><h1>{title}</h1><slot name="aside" /></div> : <h1>{title}</h1>}
+  <p>{subtitle}</p>
+</div>
+<style>
+  .heading-title-row { display:flex; align-items:center; justify-content:space-between; gap:24px; }
+  .heading-title-row h1 { flex:none; }
+  @media (max-width:599px) {
+    .heading-title-row { flex-direction:column; gap:18px; }
+  }
+</style>

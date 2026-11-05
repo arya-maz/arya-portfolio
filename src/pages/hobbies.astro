@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PageHeading from '../components/PageHeading.astro';
+import NowPlaying from '../components/NowPlaying.astro';
 import MediaGallery from '../components/MediaGallery.astro';
 import { hobbyPosts } from '../data/hobbies';
 
@@ -18,7 +19,9 @@ function paragraphParts(text: string) {
 }
 ---
 <Layout title="Hobbies" page="Hobbies">
-  <PageHeading title="Hobbies" subtitle="A behind-the-scenes look into how I spend my time outside of my career." />
+  <PageHeading title="Hobbies" subtitle="A behind-the-scenes look into how I spend my time outside of my career.">
+    <NowPlaying slot="aside" />
+  </PageHeading>
   <div class="hobbies-feed">
     {hobbyPosts.map(post => <>
       {post.type === 'text' ? <article class="text-post" aria-labelledby={`${post.id}-title`}>

@@ -42,11 +42,11 @@ export const hobbyPosts: HobbyPost[] = [
   {
     id: 'walks',
     type: 'media',
-    title: 'Outdoor Walking / Traveling',
+    title: 'Traveling / Outdoor Walks',
     mediaSide: 'left',
     paragraphs: [
-      'An aspect of my life that has really become a priority in the last few years is exercise and health. Although I work out several days a week, sticking to a consistent and effective weightlifting routine, walking outdoors when the weather is warm and brisk is a feeling like none other. However, it\'s the sense of adventure that fuels my ambition to walk and explore the world around me.',
-      'Put simply, my biggest incentive for taking these walks isn\'t just the exercise; it\'s the opportunity to explore a piece of the world from a human level. Wandering through an unfamiliar park, city, neighborhood, cliffside, overlook viewpoint, or trail by foot is a euphoric experience. Admiring the architecture of buildings, the engineering and design of systems, the foliage, the people, and the means of life is simply a wonder of its own. Although, as thrilling as it is to soak everything in within the moment, capturing a stellar photo or a cinematic video of the ambiance creates a lasting memory that can be shared.',
+      "Exercise and health have become a priority of mine within the last few years. While I've been weightlifting for some time now, I recently picked up a consistent habit of going on frequent outdoor walks during the seasons of nicer weather.",
+      "In all honesty, it isn't even the walking itself that appeals to me -- it's the driving to an unfamiliar part of town, street, park, , cliffside, overlook point, etc, and roaming around from there on a human level. My passion of exploration of both nature and civilization (paired with the nice weather, of course), fuels my love of simply going on walks.",
     ],
     media: [
       { type: 'image', src: '/media/hobbies/standing-on-rock.jpeg', alt: 'Ramapo Lake -- Wanaque, NJ', thumbnail: '/media/hobbies/standing-on-rock-THUMBNAIL.jpeg' },
