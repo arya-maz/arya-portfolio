@@ -36,14 +36,16 @@ function paragraphParts(text: string) {
   </div>
 </Layout>
 <style>
-  .paragraph-link { text-decoration:underline; text-underline-offset:3px; }
-  .post-gallery { min-width:0; width:100%; }
-  @media (min-width:600px) {
-    .media-row,.media-row.image-left { display:flow-root; min-height:0; }
-    .row-copy { display:contents; }
-    .row-copy h2 { top:0; }
-    .post-gallery { float:right; width:min(62.069%,488.53125px); margin:0 0 24px clamp(24px, calc(3.81vw + 1.14px), 56px); }
-    .image-left .post-gallery { float:left; margin:0 clamp(24px, calc(3.81vw + 1.14px), 56px) 24px 0; }
+  .post-gallery { min-width: 0; width: 100%; overflow-wrap: anywhere; }
+
+  @media (min-width: 800px) {
+    .media-row { display: flow-root; }
+    .row-copy { display: contents; }
+    .post-gallery { float: right; width: min(48%, 488px); margin: 0 0 var(--space-4) var(--section-gap); }
+    .image-left .post-gallery { float: left; margin: 0 var(--section-gap) var(--space-4) 0; }
   }
-  @media (max-width:599px) { .post-gallery { order:-1; } }
+
+  @media (max-width: 799px) {
+    .media-row { display: flex; flex-direction: column; gap: var(--space-5); }
+  }
 </style>

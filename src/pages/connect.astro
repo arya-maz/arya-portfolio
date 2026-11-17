@@ -11,29 +11,98 @@ import { socials } from '../data/social';
       const isContact = social.name === 'Email';
       const Tag = isContact ? 'button' : social.href ? 'a' : 'section';
       return <Tag class="social-profile" type={isContact ? 'button' : undefined} data-contact-toggle={isContact ? true : undefined} aria-expanded={isContact ? 'false' : undefined} aria-controls={isContact ? 'contact-panel' : undefined} href={social.href || undefined} target={social.href ? '_blank' : undefined} rel={social.href ? 'noopener noreferrer' : undefined} aria-label={isContact ? 'Show contact form' : social.href ? `Open Arya’s ${social.name} in a new tab` : undefined}>
-        <img class="social-desktop-icon" src={`/design/${social.desktop}.svg`} width="64" height="64" alt="" />
-        <img class="social-mobile-icon" src={`/design/${social.mobile}.svg`} width="56" height="56" alt="" />
-        <div class="social-copy"><h2>{social.name}</h2></div>
+        <span class="social-identity">
+          <img class="social-icon" src={`/design/${social.desktop}.svg`} width="64" height="64" alt="" />
+          <span class="social-name">{social.name}</span>
+        </span>
+        <span class="social-description"><span>{social.description}</span></span>
       </Tag>;
     })}
   </div>
   <div id="contact-panel" hidden><ContactForm /></div>
 </Layout>
-<script>
-  const toggle = document.querySelector<HTMLButtonElement>('[data-contact-toggle]');
-  const panel = document.querySelector<HTMLElement>('#contact-panel');
-  toggle?.addEventListener('click', () => {
-    if (!panel) return;
-    const opening = panel.hidden;
-    panel.hidden = !opening;
-    toggle.setAttribute('aria-expanded', String(opening));
-    toggle.setAttribute('aria-label', opening ? 'Hide contact form' : 'Show contact form');
-    if (opening) {
-      panel.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'nearest' });
-      panel.querySelector<HTMLInputElement>('input[name="name"]')?.focus({ preventScroll: true });
-    }
-  });
-</script>
 <style>
-  button.social-profile { background:transparent; border:0; padding:0; color:inherit; font:inherit; }
+  .socials {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: start;
+    gap: var(--space-3);
+  }
+
+  .social-profile {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: var(--space-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-surface);
+    background: linear-gradient(150deg, rgb(156 188 224 / 7%), transparent 68%), var(--surface);
+    box-shadow: var(--shadow-inset);
+    text-align: center;
+    transition: border-color var(--duration-hover), background-color var(--duration-hover);
+  }
+
+  .social-profile:hover, .social-profile[aria-expanded='true'] {
+    border-color: var(--line-bright);
+    background-color: var(--surface-hover);
+  }
+
+  .social-identity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(clamp(112px, 12vw, 152px) - 2 * var(--space-2) - 2px);
+    gap: var(--space-3);
+  }
+
+  .social-name {
+    color: var(--text);
+    font-family: var(--font-heading);
+    font-size: clamp(.9rem, 1.75vw, 1.15rem);
+    font-weight: 680;
+    line-height: 1.24;
+  }
+
+  .social-description { display: none; }
+
+  @media (min-width: 600px) {
+    .social-description {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      visibility: hidden;
+      padding-inline: .25rem;
+      color: var(--accent-bright);
+      font-size: var(--size-small);
+      line-height: 1.45;
+      transition:
+        grid-template-rows var(--duration-tab) var(--ease-out),
+        opacity var(--duration-hover),
+        visibility var(--duration-tab);
+    }
+
+    .social-description > span {
+      min-height: 0;
+      overflow: hidden;
+      overflow-wrap: anywhere;
+    }
+
+    .social-profile:is(:hover, :focus-visible) .social-description {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  .social-icon {
+    width: 52px;
+    height: 52px;
+    flex: none;
+    object-fit: contain;
+  }
+
+  @media (max-width: 599px) {
+    .socials { grid-template-columns: minmax(0, 1fr); }
+  }
 </style>

@@ -1,0 +1,50 @@
+:root {
+  color-scheme: dark;
+  --canvas: #0c1016;
+  --tab-rest: #1b2330;
+  --folder-top: #293f58;
+  --folder-mid: #203043;
+  --folder-base: #172331;
+  --surface: #172331;
+  --surface-deep: #101a26;
+  --surface-hover: #24374b;
+  --accent: #9cbce0;
+  --accent-bright: #c1d9f1;
+  --text: #edf1f7;
+  --text-body: #d7e1ed;
+  --text-muted: #b5c5d8;
+  --positive: #94ceb4;
+  --line: rgb(156 188 224 / 26%);
+  --line-soft: rgb(156 188 224 / 16%);
+  --line-bright: rgb(176 209 242 / 62%);
+
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-heading: 'Manrope', system-ui, sans-serif;
+  --size-h1: clamp(2.1rem, 5.5vw, 4.5rem);
+  --size-h2: clamp(1.25rem, 2vw, 1.65rem);
+  --size-body: clamp(1rem, 1.3vw, 1.125rem);
+  --size-small: .875rem;
+  --leading-copy: 1.65;
+
+  --space-2: .5rem;
+  --space-3: .75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --shell-width: 76rem;
+  --shell-gutter: clamp(12px, 4vw, 64px);
+  --folder-gutter: clamp(16px, 5vw, 76px);
+  --section-gap: clamp(24px, 4vw, 48px);
+  --radius-control: 6px;
+  --radius-surface: 12px;
+  --radius-folder: 15px;
+  --shadow-folder: 0 28px 80px -28px rgb(0 0 0 / 85%), 0 8px 22px rgb(0 0 0 / 32%);
+  --shadow-inset: inset 0 1px rgb(213 231 249 / 9%), 0 4px 16px rgb(0 0 0 / 16%);
+
+  --ease-out: cubic-bezier(.2, .72, .24, 1);
+  --duration-hover: 180ms;
+  --duration-tab: 240ms;
+  --duration-exit: 105ms;
+  --duration-route: 235ms;
+  --duration-entrance: 320ms;
+  --route-offset: clamp(8px, 1.25vw, 18px);
+}

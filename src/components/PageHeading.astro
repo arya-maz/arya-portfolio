@@ -7,9 +7,5 @@ const { title, subtitle } = Astro.props;
   <p>{subtitle}</p>
 </div>
 <style>
-  .heading-title-row { display:flex; align-items:center; justify-content:space-between; gap:24px; }
-  .heading-title-row h1 { flex:none; }
-  @media (max-width:599px) {
-    .heading-title-row { flex-direction:column; gap:18px; }
-  }
+  .heading-title-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
 </style>

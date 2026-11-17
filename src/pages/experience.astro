@@ -61,7 +61,7 @@ const experiences = [
       <article class="experience-row">
         <div class="experience-company">
           <img class="experience-logo" src={experience.logo} alt={experience.logoAlt} width="160" height="160" loading="lazy" />
-          <a class="company-link" href={experience.website} target="_blank" rel="noopener noreferrer">Visit company site</a>
+          <a class="company-link" href={experience.website} target="_blank" rel="noopener noreferrer">Visit company site ↗</a>
         </div>
         <div class="row-copy">
           <div class="experience-heading"><h2>{experience.company} · {experience.role}</h2></div>
@@ -76,26 +76,42 @@ const experiences = [
   </div>
 </Layout>
 <style>
-  .experience-list { gap:32px; }
-  .experience-list > hr { width:100%; flex-shrink:0; }
-  @media (max-width:599px) { .experience-list { gap:20px; } }
-  .experience-copy li + li { margin-top:10px; }
-  .experience-company { width:160px; text-align:center; }
-  .experience-logo { display:block; width:100%; height:160px; object-fit:contain; border-radius:12px; }
-  .company-link { display:inline-block; margin-top:16px; text-decoration:underline; }
-  @media (min-width:600px) {
-    .experience-row { display:flow-root; min-height:0; }
-    .row-copy { display:contents; }
-    .experience-heading { display:block; }
-    .experience-heading h2 { top:0; }
-    .experience-company { float:right; margin:0 0 24px clamp(24px, calc(3.81vw + 1.14px), 56px); }
+  .experience-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(86px, 13vw, 144px);
+    align-items: start;
+    gap: var(--section-gap);
   }
-  @media (max-width:599px) {
-    .experience-row { display:grid; grid-template-columns:minmax(0,1fr) 80px; column-gap:16px; row-gap:20px; align-items:center; }
-    .row-copy { display:contents; }
-    .experience-heading { grid-column:1; grid-row:1; display:block; }
-    .experience-company { grid-column:2; grid-row:1; width:80px; }
-    .experience-logo { height:80px; }
-    .experience-copy { grid-column:1 / -1; grid-row:2; margin-top:0; }
+
+  .row-copy { grid-column: 1; grid-row: 1; }
+  .experience-company { grid-column: 2; grid-row: 1; text-align: center; }
+  .experience-copy li + li { margin-top: var(--space-2); }
+
+  .experience-logo {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: contain;
+    padding: var(--space-3);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-surface);
+    background: #edf1f7;
+    box-shadow: var(--shadow-inset);
+  }
+
+  .company-link {
+    display: inline-block;
+    margin-top: var(--space-2);
+    font-size: var(--size-small);
+    line-height: 1.3;
+  }
+
+  @media (max-width: 599px) {
+    .experience-row { grid-template-columns: minmax(0, 1fr) 78px; gap: var(--space-4); }
+    .row-copy { display: contents; }
+    .experience-heading { grid-column: 1; grid-row: 1; align-self: center; }
+    .experience-copy { grid-column: 1 / -1; margin-top: 0; }
+    .experience-logo { padding: var(--space-2); }
+    .company-link { font-size: .76rem; }
   }
 </style>

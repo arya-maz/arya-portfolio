@@ -12,8 +12,7 @@ const projects = [
       'I built a Spotify-connected app that recommends five albums from distinct artists based on listening habits. As a vinyl collector, I\'ve always found the liner notes of records to be extremely fascinating -- a glimpse into the creative process, background, and inspiration of the album as a whole. This inspired the name of my project, as a nod to the discovery and curiosity that came along with being an admirer and collector of music.',
       'Using React, Python, and FastAPI, I developed and carefully refined a recommendation pipeline that balances familiarity with discovery, filtered out irrelevant results (extremely familiar albums, duplicate editions), and lets listeners open recommendations directly in Spotify.'
       ],
-    image: '/images/projects/liner-notes-homepage.png',
-    alt: 'Liner Notes album discovery app homepage',
+    embed: 'https://www.youtube-nocookie.com/embed/1mPw8NsGlNo?playsinline=1',
     github: 'https://github.com/arya-maz/music-recommendation-app',
   },
   {
@@ -33,9 +32,11 @@ const projects = [
   <div class="project-list">
     {projects.map((project, index) => (<>
       <article class:list={['media-row', { 'image-left': index % 2 === 1 }]}>
-        <picture class="design-media">
-          <img src={project.image} alt={project.alt} width="720" height="360" loading="lazy" />
-        </picture>
+        <div class="design-media">
+          {project.embed
+            ? <iframe src={project.embed} title={project.title} loading="lazy" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            : <img src={project.image} alt={project.alt} width="720" height="360" loading="lazy" />}
+        </div>
         <div class="row-copy">
           <h2>{project.title}</h2>
           {project.description.map(paragraph => <p>{paragraph}</p>)}
@@ -47,18 +48,35 @@ const projects = [
   </div>
 </Layout>
 <style>
-  .project-list { gap:32px; }
-  .project-list > hr { width:100%; flex-shrink:0; }
-  @media (max-width:599px) { .project-list { gap:20px; } }
-  .project-link { display:inline-block; margin-top:16px; text-decoration:underline; }
-  .design-media { display:block; width:100%; aspect-ratio:auto; border-radius:0; overflow:visible; background:transparent; }
-  .design-media img { display:block; width:100%; max-width:100%; height:auto; object-fit:contain; border-radius:0; }
-  @media (min-width:600px) {
-    .media-row,.media-row.image-left { display:flow-root; min-height:0; }
-    .row-copy { display:contents; }
-    .row-copy h2 { top:0; }
-    .design-media { float:right; width:min(40%,480px); margin:0 0 24px clamp(24px, calc(3.81vw + 1.14px), 56px); }
-    .image-left .design-media { float:left; margin:0 clamp(24px, calc(3.81vw + 1.14px), 56px) 24px 0; }
+  .media-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    align-items: start;
+    gap: var(--section-gap);
   }
 
+  .row-copy { grid-column: 1; grid-row: 1; }
+  .design-media { grid-column: 2; grid-row: 1; }
+
+  .media-row.image-left { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+  .image-left .row-copy { grid-column: 2; }
+  .image-left .design-media { grid-column: 1; }
+
+  .design-media {
+    display: block;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-surface);
+    background: var(--surface-deep);
+    box-shadow: var(--shadow-inset);
+  }
+
+  .design-media img { width: 100%; height: auto; }
+  .design-media iframe { display: block; width: 100%; aspect-ratio: 2442 / 1886; min-height: 200px; border: 0; }
+  .project-link { display: inline-block; margin-top: var(--space-4); }
+
+  @media (max-width: 799px) {
+    .media-row, .media-row.image-left { display: flex; flex-direction: column; gap: var(--space-5); }
+    .design-media { width: 100%; }
+  }
 </style>
