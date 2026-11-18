@@ -3,7 +3,6 @@ const menuButton = header.querySelector<HTMLButtonElement>('.menu-toggle')!;
 const menu = header.querySelector<HTMLElement>('.mobile-nav')!;
 const tabs = header.querySelectorAll<HTMLAnchorElement>('[data-folder-tab]');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-const ambientPointer = matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)');
 let focusMain = false;
 
 function setMenu(open: boolean) {
@@ -71,57 +70,7 @@ document.addEventListener('astro:after-swap', () => {
     else tab.removeAttribute('aria-current');
   }
   if (focusMain) document.querySelector<HTMLElement>('#main')?.focus({ preventScroll: true });
-  resetLighting();
 });
-
-// The gradient itself stays static. Interpolate only the position and opacity of its layer.
-let frame = 0;
-let litFolder: HTMLElement | null = null;
-let currentX = 0;
-let currentY = 0;
-let targetX = 0;
-let targetY = 0;
-
-function resetLighting() {
-  cancelAnimationFrame(frame);
-  frame = 0;
-  litFolder?.removeAttribute('data-lit');
-  litFolder = null;
-}
-
-function moveLight() {
-  frame = 0;
-  if (!litFolder) return;
-  currentX += (targetX - currentX) * 0.16;
-  currentY += (targetY - currentY) * 0.16;
-  litFolder.style.setProperty('--light-x', `${currentX.toFixed(1)}px`);
-  litFolder.style.setProperty('--light-y', `${currentY.toFixed(1)}px`);
-  if (Math.abs(currentX - targetX) + Math.abs(currentY - targetY) > 0.5) {
-    frame = requestAnimationFrame(moveLight);
-  }
-}
-
-document.addEventListener('pointermove', event => {
-  if (!ambientPointer.matches || event.pointerType === 'touch') return;
-  const folder = event.target instanceof Element ? event.target.closest<HTMLElement>('.folder') : null;
-  if (!folder) {
-    if (litFolder) resetLighting();
-    return;
-  }
-  const bounds = folder.getBoundingClientRect();
-  targetX = event.clientX - bounds.left;
-  targetY = event.clientY - bounds.top;
-  if (litFolder !== folder) {
-    litFolder = folder;
-    currentX = targetX;
-    currentY = targetY;
-    folder.dataset.lit = '';
-  }
-  if (!frame) frame = requestAnimationFrame(moveLight);
-}, { passive: true });
-
-document.addEventListener('pointerleave', resetLighting);
-ambientPointer.addEventListener('change', resetLighting);
 
 // Register once so contact controls are ready as soon as the router swaps the page.
 document.addEventListener('click', event => {

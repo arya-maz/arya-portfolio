@@ -22,7 +22,6 @@ const { title, page } = Astro.props;
     <div class:list={['site-shell', `page-${page.toLowerCase()}`]} data-folder-index={pages.indexOf(page)}>
       <Header active={page} />
       <main id="main" class="folder" tabindex="-1">
-        <div class="folder-light" aria-hidden="true"></div>
         <div class="folder-content"><slot /></div>
       </main>
     </div>
