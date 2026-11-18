@@ -40,8 +40,13 @@ const dateFormat = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeZon
           <time datetime={post.publishedAt}>{dateFormat.format(new Date(post.publishedAt))}</time>
           <p class="post-text">{post.text}</p>
           {post.image && <img class="post-image" src={post.image.src} alt={post.image.alt} loading="lazy" />}
-          <a href={post.url} target="_blank" rel="noopener noreferrer">View post on LinkedIn ↗</a>
         </article>}
+        <a
+          class="project-link feed-post-link"
+          href={post.platform === 'youtube' ? `https://www.youtube.com/watch?v=${post.id}` : post.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >View in {post.platform === 'youtube' ? 'YouTube' : 'LinkedIn'} ↗</a>
       </li>)}
     </ol>
   )}
@@ -66,12 +71,12 @@ const dateFormat = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeZon
     letter-spacing: -.055em;
   }
 
-  .feed a {
-    color: var(--accent-bright);
-    text-underline-offset: .2em;
+  .feed-post-link {
+    display: inline-block;
+    margin-top: var(--space-2);
+    font-size: var(--size-small);
   }
 
-  .feed a:hover { text-decoration: underline; }
   .feed-empty { margin-top: var(--space-3); }
 
   .feed-posts {
